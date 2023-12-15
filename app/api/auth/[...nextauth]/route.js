@@ -11,30 +11,35 @@ const handler = NextAuth({
     }),
   ],
 
-  // checking whick user logged in with email
+  // function that retrives the data of the user that is currently online
   async session({ session }) {
     const sessionUser = await User.findOne({
       email: session.user.email,
     });
-    session.user.id = sessionUser._id.toString();
+
+    session.used.id = sessionUser._id.toString();
     return session;
   },
 
-  //Function creates new user if it doesn't exist yet
+  // signIn function creates a new user if one does not exist yet
   async signIn({ profile }) {
     try {
       await connectToDb();
-      // Check if the user already exist
-      const userExist = await User.findOne({
+
+      // check if a user already exists
+      const userExists = await User.findOne({
         email: profile.email,
       });
-      if (!userExist) {
+
+      // if not create a new user
+      if (!userExists) {
         await User.create({
           email: profile.email,
-          username: profile.username.replace(" ", "").toLowerCase(),
+          username: profile.name.replace(/\s+/g, "").toLowerCase(),
           image: profile.picture,
         });
       }
+
       return true;
     } catch (error) {
       console.log(error);
