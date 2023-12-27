@@ -2,13 +2,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
-import { handleClientScriptLoad } from "next/script";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
   const { data: session } = useSession();
   const pathName = usePathname();
-  const router = useRouter();
   const [copied, setCopied] = useState("");
 
   const handleCopy = () => {
@@ -21,24 +20,36 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
     <article className="prompt_card">
       <section className="flex justify-between items-start gap-5">
         <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
-          <Image
-            src={
-              post.creator?.image
-                ? post.creator.image
-                : "/assets/images/logo.svg"
-            }
-            alt="user_image"
-            height={40}
-            width={40}
-            className="rounded-full object-contain"
-          />
+          <Link
+            href={`/profile/${post.creator?._id}/name=${post.creator?.username}`}
+          >
+            <Image
+              src={
+                post.creator?.image
+                  ? post.creator.image
+                  : "/assets/images/logo.svg"
+              }
+              alt="user_image"
+              height={40}
+              width={40}
+              className="rounded-full object-contain"
+            />
+          </Link>
           <div className="flex flex-col">
-            <h3 className="font-satoshi font-semibold text-gray-900">
-              {post.creator?.username ? post.creator.username : "Unknown"}
-            </h3>
-            <p className="font-inner text-sm text-gray-500">
-              {post.creator?.email}
-            </p>
+            <Link
+              href={`/profile/${post.creator?._id}/name=${post.creator?.username}`}
+            >
+              <h3 className="font-satoshi font-semibold text-gray-900">
+                {post.creator?.username ? post.creator.username : "Unknown"}
+              </h3>
+            </Link>
+            <Link
+              href={`/profile/${post.creator?._id}/name=${post.creator?.username}`}
+            >
+              <p className="font-inner text-sm text-gray-500">
+                {post.creator?.email}
+              </p>
+            </Link>
           </div>
         </div>
         <div className="copy_btn" onClick={handleCopy}>
